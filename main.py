@@ -106,15 +106,41 @@ def noticias():
 # FUNCIONALIDADES E TELAS EXCLUSIVAS DAS JOGADORAS
 # ==================================================
 
+
+def salvar_time_em_arquivo(time):
+    """Salva as jogadoras do time em um arquivo txt"""
+    try:
+        with open("times.txt", "a", encoding="utf-8") as arquivo:  # append
+            arquivo.write(f"\nTime: {time['Nome']}\n")
+            arquivo.write("Jogadoras:\n")
+            for jogadora in time["Jogadoras"]:
+                arquivo.write(f"- {jogadora}\n")
+            arquivo.write("-" * 30 + "\n")
+        print(f"💾 Dados do time {time['Nome']} salvos com sucesso em 'times.txt'!")
+    except Exception as e:
+        print(f"Erro ao salvar os dados: {e}")
+
 def adicionar_jogadora_time():
     # pega sempre o último time criado, o que o usuario acabou de adicionar
-    time = times[-1]
-    adicionar_jogadora = int(input(f"Deseja adicionar jogadoras ao time {time['Nome']}? 1 - Sim | 2 - Não: "))
-    if adicionar_jogadora == 1:
-        nome_jogadora = input("Digite o nome da jogadora: ")
-        jogadoras.append({"Nome": nome_jogadora, "Senha": None})
-        time["Jogadoras"].append(nome_jogadora)
-        print("Jogadora adicionada com sucesso")
+    adicionar_jogadora = 0
+    while adicionar_jogadora != 2:    
+        time = times[-1]
+        adicionar_jogadora = int(input(f"Deseja adicionar jogadoras ao time {time['Nome']}? 1 - Sim | 2 - Não: "))
+        if adicionar_jogadora == 1:
+            # Validação para máximo de jogadoras em um time
+            if len(jogadoras) < 10:
+                nome_jogadora = input("Digite o nome da jogadora: ")
+                jogadoras.append({"Nome": nome_jogadora, "Senha": None})
+                time["Jogadoras"].append(nome_jogadora)
+                print("Jogadora adicionada com sucesso")
+                for jogadora in jogadoras:
+                    print(jogadora["Nome"])
+            else:
+                print("Jogadoras máximas atingidas no time")
+
+        # Quando o usuário escolhe "2 - Não", salva os dados do time no arquivo
+        if adicionar_jogadora == 2:
+            salvar_time_em_arquivo(time)
 
 # Função para ingressar em um campeonato
 def campeonatos_menu():
